@@ -1,0 +1,24 @@
+$RG= "privateAKS"
+$LOC= "eastus"
+$CLUSTER_NAME= "k9s"
+$VNET_NAME= "Vnet"
+
+$AKS_SUBNET_ID=$(az network vnet show -g $RG -n $VNET_NAME -o tsv --query "subnets[?name=='subnet'].id")
+
+az aks create `
+--resource-group $RG `
+--name $CLUSTER_NAME  `
+--location $LOC  `
+--load-balancer-sku standard `
+--network-plugin azure  `
+--vnet-subnet-id $AKS_SUBNET_ID  `
+--docker-bridge-address 172.17.5.0/24  `
+--dns-service-ip 10.240.0.2  `
+--service-cidr 10.240.0.0/22 `
+--service-principal <> `
+--client-secret <> `
+--outbound-type userDefinedRouting  `
+--enable-private-cluster `
+--tags tag-works=bool `
+--nodepool-tags  tags-work=node-bool `
+--generate-ssh-keys
